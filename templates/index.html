@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+{% block title %}Generate OPORD — Charlie OPORD Wizard{% endblock %}
+
+{% block content %}
+<form id="opord-form" action="/generate" method="post">
+
+  <!-- ================================================================
+       HEADING
+       ================================================================ -->
+  <section class="card">
+    <h2>OPORD Heading</h2>
+    <div class="form-grid">
+      <label>
+        Operation Name
+        <input type="text" name="operation_name" placeholder="e.g. IRON HAWK" required />
+      </label>
+      <label>
+        Classification
+        <select name="classification">
+          <option value="UNCLASSIFIED // TRAINING USE ONLY" selected>UNCLASSIFIED // TRAINING USE ONLY</option>
+          <option value="UNCLASSIFIED">UNCLASSIFIED</option>
+        </select>
+      </label>
+      <label>
+        Date-Time Group (DTG)
+        <input type="text" name="dtg" value="{{ default_dtg }}" placeholder="e.g. 231500Z FEB 2025" required />
+      </label>
+      <label>
+        Time Zone
+        <select name="time_zone">
+          <option value="ZULU" selected>ZULU (Z)</option>
+          <option value="LOCAL">LOCAL</option>
+        </select>
+      </label>
+      <label>
+        Reference Map(s)
+        <input type="text" name="reference_maps" placeholder="e.g. Kandahar, 1:50,000, Series V502" />
+      </label>
+      <label>
+        Insert Method
+        <select name="insert_method">
+          <option value="">-- Select --</option>
+          <option value="Airborne (Static Line)">Airborne (Static Line)</option>
+          <option value="Airborne (HALO/HAHO)">Airborne (HALO/HAHO)</option>
+          <option value="Air Assault (Helicopter)">Air Assault (Helicopter)</option>
+          <option value="Ground (Motor March)">Ground (Motor March)</option>
+          <option value="Ground (Dismounted)">Ground (Dismounted)</option>
+        </select>
+      </label>
+      <label>
+        DZ / LZ
+        <input type="text" name="dz_lz" placeholder="e.g. DZ FALCON" />
+      </label>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       PARAGRAPH 1 — SITUATION
+       ================================================================ -->
+  <section class="card">
+    <h2>1. Situation</h2>
+
+    <h3>a. Enemy Forces</h3>
+    <div class="form-grid">
+      <label>
+        Composition
+        <input type="text" name="enemy_composition" placeholder="e.g. Reinforced platoon, OPFOR regular infantry" />
+      </label>
+      <label>
+        Disposition
+        <input type="text" name="enemy_disposition" placeholder="e.g. Defending grid 12ABC34567" />
+      </label>
+      <label>
+        Strength
+        <input type="text" name="enemy_strength" placeholder="e.g. ~40 personnel" />
+      </label>
+      <label>
+        Recent Activity
+        <input type="text" name="enemy_recent_activity" placeholder="e.g. Established defensive positions 23FEB" />
+      </label>
+      <label class="full-width">
+        Capabilities
+        <textarea name="enemy_capabilities" rows="2" placeholder="Leave blank to AI-generate"></textarea>
+      </label>
+      <label class="full-width">
+        Most Likely COA
+        <textarea name="enemy_most_likely_coa" rows="2" placeholder="Leave blank to AI-generate"></textarea>
+      </label>
+      <label class="full-width">
+        Most Dangerous COA
+        <textarea name="enemy_most_dangerous_coa" rows="2" placeholder="Leave blank to AI-generate"></textarea>
+      </label>
+    </div>
+
+    <h3>b. Friendly Forces</h3>
+    <div class="form-grid">
+      <label class="full-width">
+        Higher HQ Mission (1-7 CAV)
+        <textarea name="friendly_higher_hq_mission" rows="2" placeholder="e.g. 1-7 CAV attacks to seize OBJ BULLDOG NLT 231800Z FEB 25"></textarea>
+      </label>
+      <label>
+        Adjacent Units
+        <input type="text" name="friendly_adjacent_units" placeholder="e.g. Alpha Co (left), Bravo Co (right)" />
+      </label>
+      <label>
+        Supporting Units
+        <input type="text" name="friendly_supporting_units" placeholder="e.g. D/1-7 CAV (Aviation), 1-7 CAV FSE" />
+      </label>
+    </div>
+
+    <h3>c. Attachments &amp; Detachments</h3>
+    <div class="form-grid">
+      <label class="full-width">
+        <textarea name="attachments_detachments" rows="2" placeholder="e.g. 1x medic team ATTACHED; 2x RTOs DETACHED to BN HQ"></textarea>
+      </label>
+    </div>
+
+    <h3>d. Civil Considerations</h3>
+    <div class="form-grid">
+      <label class="full-width">
+        <textarea name="civil_considerations" rows="2" placeholder="e.g. Local population: neutral. No significant ASCOPE factors."></textarea>
+      </label>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       PARAGRAPH 2 — MISSION
+       ================================================================ -->
+  <section class="card">
+    <h2>2. Mission</h2>
+    <div class="form-grid">
+      <label class="full-width">
+        Mission Statement <span class="hint">(Who, What, When, Where, Why)</span>
+        <textarea name="mission" rows="3" required placeholder="e.g. C/1-7 CAV conducts an airborne assault on OBJ EAGLE NLT 231800Z FEB 25 to destroy OPFOR element and seize key terrain in order to enable 1-7 CAV to consolidate and exploit."></textarea>
+      </label>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       PARAGRAPH 3 — EXECUTION
+       ================================================================ -->
+  <section class="card">
+    <h2>3. Execution</h2>
+
+    <h3>a. Commander's Intent</h3>
+    <div class="form-grid">
+      <label class="full-width">
+        <textarea name="commanders_intent" rows="3" placeholder="Leave blank to AI-generate — describe purpose, key tasks, end state"></textarea>
+      </label>
+    </div>
+
+    <h3>b. Concept of Operations</h3>
+    <div class="form-grid">
+      <label class="full-width">
+        <textarea name="concept_of_operations" rows="3" placeholder="Leave blank to AI-generate"></textarea>
+      </label>
+    </div>
+
+    <h3>c. Scheme of Maneuver</h3>
+    <div class="form-grid">
+      <label class="full-width">
+        <textarea name="scheme_of_maneuver" rows="3" placeholder="Leave blank to AI-generate"></textarea>
+      </label>
+    </div>
+
+    <h3>d. Scheme of Fires</h3>
+    <div class="form-grid">
+      <label class="full-width">
+        <textarea name="scheme_of_fires" rows="2" placeholder="Leave blank to AI-generate"></textarea>
+      </label>
+    </div>
+
+    <h3>e. Tasks to Subordinate Units</h3>
+    <div class="form-grid">
+      {% for unit, key in [
+          ("1st Platoon (Rifle)", "task_1st"),
+          ("2nd Platoon (Rifle)", "task_2nd"),
+          ("3rd Platoon (Rifle)", "task_3rd"),
+          ("Weapons Platoon",    "task_weapons"),
+          ("HQ & Support",       "task_headquarters")
+        ] %}
+      <label>
+        {{ unit }}
+        <input type="text" name="{{ key }}" placeholder="Task for {{ unit }}" />
+      </label>
+      {% endfor %}
+    </div>
+
+    <h3>f. Coordinating Instructions</h3>
+    <div class="form-grid">
+      <label class="full-width">
+        <textarea name="coordinating_instructions" rows="3" placeholder="Leave blank to AI-generate — H-Hour, SP times, consolidation plan, etc."></textarea>
+      </label>
+    </div>
+
+    <h3>g. Rules of Engagement</h3>
+    <div class="form-grid">
+      <label class="full-width">
+        <textarea name="rules_of_engagement" rows="2" placeholder="e.g. Standard ROE apply. PID required prior to engagement."></textarea>
+      </label>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       PARAGRAPH 4 — SUSTAINMENT
+       ================================================================ -->
+  <section class="card">
+    <h2>4. Sustainment</h2>
+    <div class="form-grid">
+      <label class="full-width">
+        Logistics
+        <textarea name="sustainment_logistics" rows="2" placeholder="Leave blank to AI-generate — ammo, water, food, vehicles"></textarea>
+      </label>
+      <label class="full-width">
+        Personnel
+        <textarea name="sustainment_personnel" rows="2" placeholder="e.g. See manning roster. No changes to Table of Organization."></textarea>
+      </label>
+      <label class="full-width">
+        Medical
+        <textarea name="sustainment_medical" rows="2" placeholder="Leave blank to AI-generate — CASEVAC plan, MTF location"></textarea>
+      </label>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       PARAGRAPH 5 — COMMAND AND SIGNAL
+       ================================================================ -->
+  <section class="card">
+    <h2>5. Command and Signal</h2>
+    <div class="form-grid">
+      <label>
+        CP Location
+        <input type="text" name="command_cp" placeholder="e.g. Grid 12ABC45678" />
+      </label>
+      <label>
+        Succession of Command
+        <input type="text" name="succession_of_command" placeholder="e.g. 1PSG, then 1PLT LDR" />
+      </label>
+      <label class="full-width">
+        Signal / PACE Plan
+        <textarea name="signal" rows="2" placeholder="Leave blank to AI-generate — PACE plan, comms windows"></textarea>
+      </label>
+      <label>
+        Frequencies
+        <input type="text" name="frequencies" placeholder="e.g. CMD: 46.250 / LOG: 47.100" />
+      </label>
+      <label>
+        Challenge / Password
+        <input type="text" name="challenge_and_password" placeholder="e.g. RAVEN / TALON" />
+      </label>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       AI + SUBMIT
+       ================================================================ -->
+  <section class="card card-actions">
+    {% if ai_enabled %}
+    <label class="toggle-label">
+      <input type="checkbox" name="use_ai" id="use_ai" checked />
+      <span>Use AI to fill in missing / blank fields</span>
+    </label>
+    {% else %}
+    <p class="hint">
+      AI enrichment is disabled — set <code>OPENAI_API_KEY</code> in your <code>.env</code> file to enable it.
+    </p>
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Generate OPORD</button>
+  </section>
+
+</form>
+{% endblock %}

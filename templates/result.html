@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}OPORD {{ opord.operation_name }} — Charlie OPORD Wizard{% endblock %}
+
+{% block content %}
+<div class="result-toolbar">
+  <a href="/" class="btn btn-secondary">&larr; New OPORD</a>
+  <button onclick="window.print()" class="btn btn-secondary">Print / Save PDF</button>
+  {% if slides_enabled %}
+  <form action="/export" method="post" style="display:inline">
+    <button type="submit" class="btn btn-primary">Export to Google Slides</button>
+  </form>
+  {% else %}
+  <span class="hint" title="Set GOOGLE_CREDENTIALS_FILE in .env to enable this feature.">
+    Google Slides export not configured
+  </span>
+  {% endif %}
+</div>
+
+<section class="card opord-document">
+  <pre class="opord-text">{{ opord_text }}</pre>
+</section>
+
+<!-- Structured view -->
+<section class="card">
+  <h2>Structured View</h2>
+
+  <details open>
+    <summary><strong>1. Situation</strong></summary>
+    <div class="detail-body">
+      <h4>a. Enemy Forces</h4>
+      <table class="opord-table">
+        <tr><th>Composition</th><td>{{ opord.situation.enemy.composition or '—' }}</td></tr>
+        <tr><th>Disposition</th><td>{{ opord.situation.enemy.disposition or '—' }}</td></tr>
+        <tr><th>Strength</th><td>{{ opord.situation.enemy.strength or '—' }}</td></tr>
+        <tr><th>Recent Activity</th><td>{{ opord.situation.enemy.recent_activity or '—' }}</td></tr>
+        <tr><th>Capabilities</th><td>{{ opord.situation.enemy.capabilities or '—' }}</td></tr>
+        <tr><th>Most Likely COA</th><td>{{ opord.situation.enemy.most_likely_coa or '—' }}</td></tr>
+        <tr><th>Most Dangerous COA</th><td>{{ opord.situation.enemy.most_dangerous_coa or '—' }}</td></tr>
+      </table>
+
+      <h4>b. Friendly Forces</h4>
+      <table class="opord-table">
+        <tr><th>Higher HQ Mission</th><td>{{ opord.situation.friendly.higher_hq_mission or '—' }}</td></tr>
+        <tr><th>Adjacent Units</th><td>{{ opord.situation.friendly.adjacent_units or '—' }}</td></tr>
+        <tr><th>Supporting Units</th><td>{{ opord.situation.friendly.supporting_units or '—' }}</td></tr>
+      </table>
+
+      <h4>c. Attachments &amp; Detachments</h4>
+      <p>{{ opord.situation.attachments_detachments or '—' }}</p>
+
+      <h4>d. Civil Considerations</h4>
+      <p>{{ opord.situation.civil_considerations or '—' }}</p>
+    </div>
+  </details>
+
+  <details open>
+    <summary><strong>2. Mission</strong></summary>
+    <div class="detail-body">
+      <p>{{ opord.mission or '—' }}</p>
+      <p><strong>Insert Method:</strong> {{ opord.insert_method or '—' }}</p>
+      <p><strong>DZ / LZ:</strong> {{ opord.dz_lz or '—' }}</p>
+    </div>
+  </details>
+
+  <details open>
+    <summary><strong>3. Execution</strong></summary>
+    <div class="detail-body">
+      <h4>a. Commander's Intent</h4>
+      <p>{{ opord.execution.commanders_intent or '—' }}</p>
+
+      <h4>b. Concept of Operations</h4>
+      <p>{{ opord.execution.concept_of_operations or '—' }}</p>
+
+      <h4>c. Scheme of Maneuver</h4>
+      <p>{{ opord.execution.scheme_of_maneuver or '—' }}</p>
+
+      <h4>d. Scheme of Fires</h4>
+      <p>{{ opord.execution.scheme_of_fires or '—' }}</p>
+
+      <h4>e. Tasks to Subordinate Units</h4>
+      {% if opord.execution.tasks_to_subordinates %}
+      <table class="opord-table">
+        {% for unit, task in opord.execution.tasks_to_subordinates.items() %}
+        <tr><th>{{ unit }}</th><td>{{ task }}</td></tr>
+        {% endfor %}
+      </table>
+      {% else %}
+      <p>Tasks TBD for all subordinate units.</p>
+      {% endif %}
+
+      <h4>f. Coordinating Instructions</h4>
+      <p>{{ opord.execution.coordinating_instructions or '—' }}</p>
+
+      <h4>g. Rules of Engagement</h4>
+      <p>{{ opord.execution.rules_of_engagement or '—' }}</p>
+    </div>
+  </details>
+
+  <details open>
+    <summary><strong>4. Sustainment</strong></summary>
+    <div class="detail-body">
+      <h4>Logistics</h4>
+      <p>{{ opord.sustainment.logistics or '—' }}</p>
+      <h4>Personnel</h4>
+      <p>{{ opord.sustainment.personnel or '—' }}</p>
+      <h4>Medical</h4>
+      <p>{{ opord.sustainment.medical or '—' }}</p>
+    </div>
+  </details>
+
+  <details open>
+    <summary><strong>5. Command and Signal</strong></summary>
+    <div class="detail-body">
+      <table class="opord-table">
+        <tr><th>CP Location</th><td>{{ opord.command_and_signal.command or '—' }}</td></tr>
+        <tr><th>Succession of Command</th><td>{{ opord.command_and_signal.succession_of_command or '—' }}</td></tr>
+        <tr><th>Signal / PACE</th><td>{{ opord.command_and_signal.signal or '—' }}</td></tr>
+        <tr><th>Frequencies</th><td>{{ opord.command_and_signal.frequencies or '—' }}</td></tr>
+        <tr><th>Challenge / Password</th><td>{{ opord.command_and_signal.challenge_and_password or '—' }}</td></tr>
+      </table>
+    </div>
+  </details>
+</section>
+{% endblock %}

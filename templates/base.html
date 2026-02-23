@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Charlie OPORD Wizard{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <span class="unit-badge">C/1-7 CAV</span>
+      <h1>Charlie OPORD Wizard</h1>
+      <p class="subtitle">Airborne / Air Assault &mdash; Operations Order Generator</p>
+    </div>
+  </header>
+
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>
+      Charlie Company, 1st Battalion, 7th Cavalry Gaming Regiment &mdash;
+      <a href="https://7cav.us/" target="_blank" rel="noopener">7cav.us</a>
+    </p>
+    <p class="classification">UNCLASSIFIED // TRAINING USE ONLY</p>
+  </footer>
+</body>
+</html>

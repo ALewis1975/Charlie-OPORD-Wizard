@@ -1,0 +1,231 @@
+/* Charlie OPORD Wizard — stylesheet */
+
+:root {
+  --army-green: #3b4a2f;
+  --army-tan:   #c8b88a;
+  --army-khaki: #f4efe4;
+  --text:       #1e1e1e;
+  --border:     #b0a080;
+  --accent:     #5a7a3a;
+  --danger:     #8b1a1a;
+  --warn:       #7a5c00;
+  --success:    #1a5c2a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Courier New', Courier, monospace;
+  background: var(--army-khaki);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ────────────────────────────────────────────────────────── */
+header {
+  background: var(--army-green);
+  color: #e8dfc8;
+  padding: 1rem 2rem;
+  border-bottom: 4px solid var(--army-tan);
+}
+.header-inner { max-width: 1100px; margin: 0 auto; }
+header h1 { font-size: 1.8rem; letter-spacing: 0.05em; }
+header .subtitle { font-size: 0.9rem; opacity: 0.8; margin-top: 0.2rem; }
+.unit-badge {
+  display: inline-block;
+  background: var(--army-tan);
+  color: var(--army-green);
+  font-weight: bold;
+  padding: 0.1rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.4rem;
+}
+
+/* ── Main ────────────────────────────────────────────────────────────*/
+main {
+  flex: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+
+/* ── Flash messages ──────────────────────────────────────────────── */
+.flash-messages { margin-bottom: 1rem; }
+.flash {
+  padding: 0.6rem 1rem;
+  border-left: 4px solid;
+  margin-bottom: 0.4rem;
+  border-radius: 2px;
+}
+.flash-success  { background: #d4edda; border-color: var(--success); color: var(--success); }
+.flash-warning  { background: #fff3cd; border-color: var(--warn);    color: var(--warn);    }
+.flash-danger   { background: #f8d7da; border-color: var(--danger);  color: var(--danger);  }
+
+/* ── Cards ────────────────────────────────────────────────────────── */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 1.2rem;
+}
+.card h2 {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--army-green);
+  border-bottom: 2px solid var(--army-tan);
+  padding-bottom: 0.3rem;
+  margin-bottom: 1rem;
+}
+.card h3 {
+  font-size: 0.95rem;
+  color: var(--army-green);
+  margin: 1rem 0 0.5rem;
+}
+.card h4 { margin: 0.8rem 0 0.3rem; font-size: 0.9rem; }
+
+/* ── Form grid ───────────────────────────────────────────────────── */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.8rem;
+}
+.form-grid label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; font-weight: bold; }
+.form-grid .full-width { grid-column: 1 / -1; }
+
+input[type="text"],
+select,
+textarea {
+  font-family: inherit;
+  font-size: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.35rem 0.5rem;
+  background: var(--army-khaki);
+  color: var(--text);
+  width: 100%;
+  resize: vertical;
+}
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--accent);
+  background: #fff;
+}
+
+/* ── Hint / small text ───────────────────────────────────────────── */
+.hint { font-size: 0.8rem; color: #555; font-style: italic; }
+
+/* ── Actions card ─────────────────────────────────────────────────── */
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.toggle-label input[type="checkbox"] { width: 1rem; height: 1rem; }
+
+/* ── Buttons ────────────────────────────────────────────────────────*/
+.btn {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-primary  { background: var(--army-green); color: #e8dfc8; }
+.btn-primary:hover { background: var(--accent); }
+.btn-secondary { background: var(--army-tan); color: var(--army-green); }
+.btn-secondary:hover { background: #b0a070; }
+
+/* ── Result page ─────────────────────────────────────────────────── */
+.result-toolbar {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.opord-document { overflow-x: auto; }
+.opord-text {
+  white-space: pre-wrap;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  background: var(--army-khaki);
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+/* ── Structured view (details/summary) ──────────────────────────── */
+details { margin-bottom: 0.8rem; border: 1px solid var(--border); border-radius: 3px; }
+summary {
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  background: var(--army-khaki);
+  border-radius: 3px;
+  user-select: none;
+}
+summary:hover { background: var(--army-tan); }
+.detail-body { padding: 0.8rem 1rem; }
+
+/* ── Table ───────────────────────────────────────────────────────── */
+.opord-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin-bottom: 0.6rem;
+}
+.opord-table th,
+.opord-table td {
+  border: 1px solid var(--border);
+  padding: 0.3rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+}
+.opord-table th {
+  width: 220px;
+  background: var(--army-khaki);
+  font-weight: bold;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+footer {
+  background: var(--army-green);
+  color: #a0b080;
+  text-align: center;
+  padding: 0.8rem 1rem;
+  font-size: 0.8rem;
+}
+footer a { color: var(--army-tan); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+.classification { color: #ff9090; font-weight: bold; margin-top: 0.2rem; }
+
+/* ── Print ────────────────────────────────────────────────────────── */
+@media print {
+  header, footer, .result-toolbar, .card-actions { display: none; }
+  body { background: #fff; font-size: 10pt; }
+  .card { border: none; padding: 0; margin: 0; }
+  .opord-text { border: none; padding: 0; font-size: 9pt; }
+  details[open] summary { display: none; }
+}

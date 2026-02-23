@@ -60,6 +60,7 @@ class TestBuildSlideContent:
             "mission": "C/1-7 CAV conducts airborne assault on OBJ EAGLE",
             "execution": {
                 "commanders_intent": "Seize OBJ EAGLE",
+                "higher_commanders_intent": "Regain initiative across the island",
                 "concept_of_operations": "Two-phase operation",
                 "scheme_of_maneuver": "1PLT left, 2PLT right",
                 "scheme_of_fires": "CAS on call",
@@ -119,12 +120,26 @@ class TestBuildSlideContent:
     def test_contains_command_and_signal(self, full_opord_dict):
         slides = _build_slide_content(full_opord_dict)
         cs_slide = next(
-            (body for title, body in slides if "COMMAND" in title), ""
+            (body for title, body in slides if "COMMUNICATION" in title), ""
         )
         assert "46.250" in cs_slide
         assert "RAVEN / TALON" in cs_slide
 
+    def test_contains_higher_commanders_intent(self, full_opord_dict):
+        slides = _build_slide_content(full_opord_dict)
+        intent_slide = next(
+            (body for title, body in slides if "Intent" in title), ""
+        )
+        assert "Regain initiative" in intent_slide
+
+    def test_contains_concept_of_operations(self, full_opord_dict):
+        slides = _build_slide_content(full_opord_dict)
+        conops_slide = next(
+            (body for title, body in slides if "Concept" in title), ""
+        )
+        assert "Two-phase operation" in conops_slide
+
     def test_slide_count(self, full_opord_dict):
         slides = _build_slide_content(full_opord_dict)
-        # Title + Enemy + Friendly + Mission + Intent&ConOps + Maneuver&Fires + Coord&ROE + Sustainment + C&S
-        assert len(slides) == 9
+        # Title + Enemy + Friendly + Mission + Intent + ConOps + Maneuver&Fires + Coord&ROE + Admin&Sus + Comms
+        assert len(slides) == 10

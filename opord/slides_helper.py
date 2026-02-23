@@ -26,8 +26,8 @@ Placeholder convention (for template-based workflow):
   Mission:
     {{MISSION}}, {{INSERT_METHOD}}, {{DZ_LZ}}
   Execution:
-    {{COMMANDERS_INTENT}}, {{CONCEPT_OF_OPS}}, {{SCHEME_OF_MANEUVER}},
-    {{SCHEME_OF_FIRES}}, {{TASKS_TO_SUBORDINATES}},
+    {{COMMANDERS_INTENT}}, {{HIGHER_COMMANDERS_INTENT}}, {{CONCEPT_OF_OPS}},
+    {{SCHEME_OF_MANEUVER}}, {{SCHEME_OF_FIRES}}, {{TASKS_TO_SUBORDINATES}},
     {{COORDINATING_INSTRUCTIONS}}, {{RULES_OF_ENGAGEMENT}}
   Sustainment:
     {{SUSTAINMENT_LOGISTICS}}, {{SUSTAINMENT_PERSONNEL}},
@@ -186,6 +186,9 @@ def export_to_slides(opord_dict: dict) -> Optional[str]:
                 "COMMANDERS_INTENT", ex.get("commanders_intent", "")
             ),
             _make_text_replace_request(
+                "HIGHER_COMMANDERS_INTENT", ex.get("higher_commanders_intent", "")
+            ),
+            _make_text_replace_request(
                 "CONCEPT_OF_OPS", ex.get("concept_of_operations", "")
             ),
             _make_text_replace_request(
@@ -335,7 +338,20 @@ def _text_slide_requests(slide_id: str, page_elements: list,
 
 
 def _build_slide_content(opord: dict) -> list:
-    """Return list of (title, body) tuples for each OPORD slide."""
+    """Return list of (title, body) tuples for each OPORD slide.
+
+    Slide structure follows the 7th Cavalry OPORD template:
+      1. Title / cover slide
+      2. Situation — Enemy Forces
+      3. Situation — Friendly Forces
+      4. Mission
+      5. Execution — Commander's Intent
+      6. Execution — Concept of Operations
+      7. Execution — Maneuver, Fires & Tasks
+      8. Execution — Coordinating Instructions & ROE
+      9. Administration & Sustainment
+     10. Communications
+    """
     unit = opord.get("unit", "")
     op = opord.get("operation_name", "TBD")
     dtg = opord.get("dtg", "")
@@ -348,24 +364,27 @@ def _build_slide_content(opord: dict) -> list:
     cs = opord.get("command_and_signal", {})
 
     slides = [
+        # 1. Title slide
         (
             f"OPORD {op} — {unit}",
             f"{classification}\nDTG: {dtg}\nReference Maps: {opord.get('reference_maps', 'N/A')}",
         ),
+        # 2. Situation — Enemy Forces
         (
-            "1. SITUATION — Enemy Forces",
+            "SITUATION — Enemy Forces",
             (
                 f"Composition: {enemy.get('composition', 'N/A')}\n"
                 f"Disposition: {enemy.get('disposition', 'N/A')}\n"
                 f"Strength: {enemy.get('strength', 'N/A')}\n"
                 f"Recent Activity: {enemy.get('recent_activity', 'N/A')}\n"
                 f"Capabilities: {enemy.get('capabilities', 'N/A')}\n"
-                f"Most Likely COA: {enemy.get('most_likely_coa', 'N/A')}\n"
-                f"Most Dangerous COA: {enemy.get('most_dangerous_coa', 'N/A')}"
+                f"LCOA (Most Likely COA): {enemy.get('most_likely_coa', 'N/A')}\n"
+                f"MDCOA (Most Dangerous COA): {enemy.get('most_dangerous_coa', 'N/A')}"
             ),
         ),
+        # 3. Situation — Friendly Forces
         (
-            "1. SITUATION — Friendly Forces",
+            "SITUATION — Friendly Forces",
             (
                 f"Higher HQ Mission: {friendly.get('higher_hq_mission', 'N/A')}\n"
                 f"Adjacent Units: {friendly.get('adjacent_units', 'N/A')}\n"
@@ -374,23 +393,31 @@ def _build_slide_content(opord: dict) -> list:
                 f"Civil Considerations: {sit.get('civil_considerations', 'N/A')}"
             ),
         ),
+        # 4. Mission
         (
-            "2. MISSION",
+            "MISSION",
             (
                 f"{opord.get('mission', 'N/A')}\n\n"
                 f"Insert Method: {opord.get('insert_method', 'N/A')}\n"
                 f"DZ/LZ: {opord.get('dz_lz', 'N/A')}"
             ),
         ),
+        # 5. Execution — Commander's Intent
         (
-            "3. EXECUTION — Commander's Intent & Concept of Ops",
+            "EXECUTION — Commander's Intent",
             (
-                f"Commander's Intent:\n{ex.get('commanders_intent', 'N/A')}\n\n"
-                f"Concept of Operations:\n{ex.get('concept_of_operations', 'N/A')}"
+                f"Operation Commander's Intent:\n{ex.get('commanders_intent', 'N/A')}\n\n"
+                f"Higher Commander's Intent:\n{ex.get('higher_commanders_intent', 'See higher OPORD.')}"
             ),
         ),
+        # 6. Execution — Concept of Operations
         (
-            "3. EXECUTION — Maneuver, Fires & Tasks",
+            "EXECUTION — Concept of Operations",
+            f"{ex.get('concept_of_operations', 'N/A')}",
+        ),
+        # 7. Execution — Maneuver, Fires & Tasks
+        (
+            "EXECUTION — Maneuver, Fires & Tasks",
             (
                 f"Scheme of Maneuver:\n{ex.get('scheme_of_maneuver', 'N/A')}\n\n"
                 f"Scheme of Fires:\n{ex.get('scheme_of_fires', 'N/A')}\n\n"
@@ -401,27 +428,30 @@ def _build_slide_content(opord: dict) -> list:
                 )
             ),
         ),
+        # 8. Execution — Coordinating Instructions & ROE
         (
-            "3. EXECUTION — Coordinating Instructions & ROE",
+            "EXECUTION — Coordinating Instructions & ROE",
             (
                 f"Coordinating Instructions:\n{ex.get('coordinating_instructions', 'N/A')}\n\n"
                 f"Rules of Engagement:\n{ex.get('rules_of_engagement', 'N/A')}"
             ),
         ),
+        # 9. Administration & Sustainment
         (
-            "4. SUSTAINMENT",
+            "ADMINISTRATION AND SUSTAINMENT",
             (
                 f"Logistics:\n{su.get('logistics', 'N/A')}\n\n"
                 f"Personnel:\n{su.get('personnel', 'N/A')}\n\n"
                 f"Medical:\n{su.get('medical', 'N/A')}"
             ),
         ),
+        # 10. Communications
         (
-            "5. COMMAND AND SIGNAL",
+            "COMMUNICATIONS",
             (
                 f"CP Location: {cs.get('command', 'N/A')}\n"
                 f"Succession of Command: {cs.get('succession_of_command', 'N/A')}\n\n"
-                f"Signal:\n{cs.get('signal', 'N/A')}\n"
+                f"Signal / PACE Plan:\n{cs.get('signal', 'N/A')}\n"
                 f"Frequencies: {cs.get('frequencies', 'N/A')}\n"
                 f"Challenge/Password: {cs.get('challenge_and_password', 'N/A')}"
             ),

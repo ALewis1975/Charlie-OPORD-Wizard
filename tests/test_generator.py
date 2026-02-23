@@ -68,6 +68,7 @@ def full_data() -> OPORDData:
         ),
         execution=Execution(
             commanders_intent="Seize OBJ EAGLE and consolidate.",
+            higher_commanders_intent="Regain initiative and dismantle enemy control on the islands.",
             concept_of_operations="Two-phase: airborne insert then assault.",
             scheme_of_maneuver="1PLT left, 2PLT right, 3PLT reserve.",
             scheme_of_fires="CAS on call; mortars suppress DZ FALCON ingress.",
@@ -177,6 +178,11 @@ class TestGenerateText:
         text = gen.generate_text()
         assert "Seize OBJ EAGLE" in text
 
+    def test_full_data_higher_commanders_intent(self, full_data):
+        gen = OPORDGenerator(full_data)
+        text = gen.generate_text()
+        assert "Regain initiative" in text
+
     def test_full_data_tasks_to_subordinates(self, full_data):
         gen = OPORDGenerator(full_data)
         text = gen.generate_text()
@@ -255,6 +261,12 @@ class TestGenerateDict:
         tasks = d["execution"]["tasks_to_subordinates"]
         assert "1st Platoon (Rifle)" in tasks
         assert tasks["1st Platoon (Rifle)"] == "Assault OBJ EAGLE."
+
+    def test_execution_higher_intent_in_dict(self, full_data):
+        gen = OPORDGenerator(full_data)
+        d = gen.generate_dict()
+        assert "higher_commanders_intent" in d["execution"]
+        assert "Regain initiative" in d["execution"]["higher_commanders_intent"]
 
     def test_subordinate_units_list(self, minimal_data):
         gen = OPORDGenerator(minimal_data)

@@ -68,16 +68,19 @@
       <h4>a. Commander's Intent</h4>
       <p>{{ opord.execution.commanders_intent or '—' }}</p>
 
-      <h4>b. Concept of Operations</h4>
+      <h4>b. Higher Commander's Intent</h4>
+      <p>{{ opord.execution.higher_commanders_intent or '—' }}</p>
+
+      <h4>c. Concept of Operations</h4>
       <p>{{ opord.execution.concept_of_operations or '—' }}</p>
 
-      <h4>c. Scheme of Maneuver</h4>
+      <h4>d. Scheme of Maneuver</h4>
       <p>{{ opord.execution.scheme_of_maneuver or '—' }}</p>
 
-      <h4>d. Scheme of Fires</h4>
+      <h4>e. Scheme of Fires</h4>
       <p>{{ opord.execution.scheme_of_fires or '—' }}</p>
 
-      <h4>e. Tasks to Subordinate Units</h4>
+      <h4>f. Tasks to Subordinate Units</h4>
       {% if opord.execution.tasks_to_subordinates %}
       <table class="opord-table">
         {% for unit, task in opord.execution.tasks_to_subordinates.items() %}
@@ -88,10 +91,10 @@
       <p>Tasks TBD for all subordinate units.</p>
       {% endif %}
 
-      <h4>f. Coordinating Instructions</h4>
+      <h4>g. Coordinating Instructions</h4>
       <p>{{ opord.execution.coordinating_instructions or '—' }}</p>
 
-      <h4>g. Rules of Engagement</h4>
+      <h4>h. Rules of Engagement</h4>
       <p>{{ opord.execution.rules_of_engagement or '—' }}</p>
     </div>
   </details>

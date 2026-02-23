@@ -67,6 +67,7 @@ class Situation:
 class Execution:
     """Paragraph 3 - Execution."""
     commanders_intent: str = ""
+    higher_commanders_intent: str = ""
     concept_of_operations: str = ""
     scheme_of_maneuver: str = ""
     scheme_of_fires: str = ""
@@ -194,16 +195,19 @@ class OPORDGenerator:
             "  a. Commander's Intent.",
             f"     Purpose:    {ex.commanders_intent or 'Not specified.'}",
             "",
-            "  b. Concept of Operations.",
+            "  b. Higher Commander's Intent.",
+            f"     {ex.higher_commanders_intent or 'See higher OPORD.'}",
+            "",
+            "  c. Concept of Operations.",
             f"     {ex.concept_of_operations or 'Not specified.'}",
             "",
-            "  c. Scheme of Maneuver.",
+            "  d. Scheme of Maneuver.",
             f"     {ex.scheme_of_maneuver or 'Not specified.'}",
             "",
-            "  d. Scheme of Fires.",
+            "  e. Scheme of Fires.",
             f"     {ex.scheme_of_fires or 'Not specified.'}",
             "",
-            "  e. Tasks to Subordinate Units.",
+            "  f. Tasks to Subordinate Units.",
         ]
         if ex.tasks_to_subordinates:
             for unit, task in ex.tasks_to_subordinates.items():
@@ -213,10 +217,10 @@ class OPORDGenerator:
                 lines.append(f"     ({unit}): Tasks TBD.")
         lines += [
             "",
-            "  f. Coordinating Instructions.",
+            "  g. Coordinating Instructions.",
             f"     {ex.coordinating_instructions or 'As required.'}",
             "",
-            "  g. Rules of Engagement.",
+            "  h. Rules of Engagement.",
             f"     {ex.rules_of_engagement or 'Standard ROE apply. PID required prior to engagement.'}",
         ]
         return "\n".join(lines)
@@ -320,6 +324,7 @@ class OPORDGenerator:
             "mission": d.mission,
             "execution": {
                 "commanders_intent": d.execution.commanders_intent,
+                "higher_commanders_intent": d.execution.higher_commanders_intent,
                 "concept_of_operations": d.execution.concept_of_operations,
                 "scheme_of_maneuver": d.execution.scheme_of_maneuver,
                 "scheme_of_fires": d.execution.scheme_of_fires,

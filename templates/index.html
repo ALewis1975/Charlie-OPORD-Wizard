@@ -149,28 +149,35 @@
       </label>
     </div>
 
-    <h3>b. Concept of Operations</h3>
+    <h3>b. Higher Commander's Intent</h3>
+    <div class="form-grid">
+      <label class="full-width">
+        <textarea name="higher_commanders_intent" rows="3" placeholder="e.g. The purpose of this operation is to regain the initiative and dismantle enemy control..."></textarea>
+      </label>
+    </div>
+
+    <h3>c. Concept of Operations</h3>
     <div class="form-grid">
       <label class="full-width">
         <textarea name="concept_of_operations" rows="3" placeholder="Leave blank to AI-generate"></textarea>
       </label>
     </div>
 
-    <h3>c. Scheme of Maneuver</h3>
+    <h3>d. Scheme of Maneuver</h3>
     <div class="form-grid">
       <label class="full-width">
         <textarea name="scheme_of_maneuver" rows="3" placeholder="Leave blank to AI-generate"></textarea>
       </label>
     </div>
 
-    <h3>d. Scheme of Fires</h3>
+    <h3>e. Scheme of Fires</h3>
     <div class="form-grid">
       <label class="full-width">
         <textarea name="scheme_of_fires" rows="2" placeholder="Leave blank to AI-generate"></textarea>
       </label>
     </div>
 
-    <h3>e. Tasks to Subordinate Units</h3>
+    <h3>f. Tasks to Subordinate Units</h3>
     <div class="form-grid">
       {% for unit, key in [
           ("1st Platoon (Rifle)", "task_1st"),
@@ -186,14 +193,14 @@
       {% endfor %}
     </div>
 
-    <h3>f. Coordinating Instructions</h3>
+    <h3>g. Coordinating Instructions</h3>
     <div class="form-grid">
       <label class="full-width">
         <textarea name="coordinating_instructions" rows="3" placeholder="Leave blank to AI-generate — H-Hour, SP times, consolidation plan, etc."></textarea>
       </label>
     </div>
 
-    <h3>g. Rules of Engagement</h3>
+    <h3>h. Rules of Engagement</h3>
     <div class="form-grid">
       <label class="full-width">
         <textarea name="rules_of_engagement" rows="2" placeholder="e.g. Standard ROE apply. PID required prior to engagement."></textarea>

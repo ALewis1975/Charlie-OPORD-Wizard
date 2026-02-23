@@ -77,6 +77,7 @@ def _form_to_opord_data(form: dict) -> OPORDData:
         mission=form.get("mission", "").strip(),
         execution=Execution(
             commanders_intent=form.get("commanders_intent", "").strip(),
+            higher_commanders_intent=form.get("higher_commanders_intent", "").strip(),
             concept_of_operations=form.get("concept_of_operations", "").strip(),
             scheme_of_maneuver=form.get("scheme_of_maneuver", "").strip(),
             scheme_of_fires=form.get("scheme_of_fires", "").strip(),

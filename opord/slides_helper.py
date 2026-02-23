@@ -8,13 +8,33 @@ If GOOGLE_SLIDES_TEMPLATE_ID is set, the helper copies that template and
 replaces placeholder text. Otherwise it creates a blank presentation with
 one slide per OPORD paragraph.
 
+Default template:
+  https://docs.google.com/presentation/d/1yktdbM4Rw0dcWcD07fYlY37AqF9eaCtx3Pdvkf0ReCw/edit
+
 Placeholder convention (for template-based workflow):
-  {{UNIT_NAME}}, {{OPERATION_NAME}}, {{DTG}}, {{CLASSIFICATION}},
-  {{MISSION}}, {{SITUATION_ENEMY}}, {{SITUATION_FRIENDLY}},
-  {{COMMANDERS_INTENT}}, {{CONCEPT_OF_OPS}}, {{SCHEME_OF_MANEUVER}},
-  {{SCHEME_OF_FIRES}}, {{COORDINATING_INSTRUCTIONS}},
-  {{SUSTAINMENT_LOGISTICS}}, {{SUSTAINMENT_MEDICAL}},
-  {{COMMAND_AND_SIGNAL}}
+  Heading:
+    {{UNIT_NAME}}, {{OPERATION_NAME}}, {{DTG}}, {{TIME_ZONE}},
+    {{CLASSIFICATION}}, {{REFERENCE_MAPS}}
+  Situation — Enemy Forces:
+    {{SITUATION_ENEMY}}, {{ENEMY_COMPOSITION}}, {{ENEMY_DISPOSITION}},
+    {{ENEMY_STRENGTH}}, {{ENEMY_RECENT_ACTIVITY}}, {{ENEMY_CAPABILITIES}},
+    {{ENEMY_MOST_LIKELY_COA}}, {{ENEMY_MOST_DANGEROUS_COA}}
+  Situation — Friendly Forces:
+    {{SITUATION_FRIENDLY}}, {{ADJACENT_UNITS}}, {{SUPPORTING_UNITS}}
+  Situation — Other:
+    {{ATTACHMENTS_DETACHMENTS}}, {{CIVIL_CONSIDERATIONS}}
+  Mission:
+    {{MISSION}}, {{INSERT_METHOD}}, {{DZ_LZ}}
+  Execution:
+    {{COMMANDERS_INTENT}}, {{CONCEPT_OF_OPS}}, {{SCHEME_OF_MANEUVER}},
+    {{SCHEME_OF_FIRES}}, {{TASKS_TO_SUBORDINATES}},
+    {{COORDINATING_INSTRUCTIONS}}, {{RULES_OF_ENGAGEMENT}}
+  Sustainment:
+    {{SUSTAINMENT_LOGISTICS}}, {{SUSTAINMENT_PERSONNEL}},
+    {{SUSTAINMENT_MEDICAL}}
+  Command and Signal:
+    {{COMMAND_AND_SIGNAL}}, {{CP_LOCATION}}, {{SUCCESSION_OF_COMMAND}},
+    {{SIGNAL}}, {{FREQUENCIES}}, {{CHALLENGE_AND_PASSWORD}}
 """
 
 import os
@@ -111,26 +131,57 @@ def export_to_slides(opord_dict: dict) -> Optional[str]:
         su = opord_dict.get("sustainment", {})
         cs = opord_dict.get("command_and_signal", {})
         sit = opord_dict.get("situation", {})
+        enemy = sit.get("enemy", {})
+        friendly = sit.get("friendly", {})
+
+        tasks_text = "\n".join(
+            f"{u}: {t}" for u, t in (ex.get("tasks_to_subordinates") or {}).items()
+        ) or "Tasks TBD."
 
         requests = [
+            # Heading
             _make_text_replace_request("UNIT_NAME", opord_dict.get("unit", "")),
             _make_text_replace_request("OPERATION_NAME", opord_dict.get("operation_name", "")),
             _make_text_replace_request("DTG", opord_dict.get("dtg", "")),
+            _make_text_replace_request("TIME_ZONE", opord_dict.get("time_zone", "")),
             _make_text_replace_request("CLASSIFICATION", opord_dict.get("classification", "")),
-            _make_text_replace_request("MISSION", opord_dict.get("mission", "")),
+            _make_text_replace_request("REFERENCE_MAPS", opord_dict.get("reference_maps", "")),
+            # Situation — Enemy (composite)
             _make_text_replace_request(
                 "SITUATION_ENEMY",
                 "\n".join([
-                    f"Composition: {sit.get('enemy', {}).get('composition', '')}",
-                    f"Disposition: {sit.get('enemy', {}).get('disposition', '')}",
-                    f"Strength: {sit.get('enemy', {}).get('strength', '')}",
-                    f"Most Likely COA: {sit.get('enemy', {}).get('most_likely_coa', '')}",
+                    f"Composition: {enemy.get('composition', '')}",
+                    f"Disposition: {enemy.get('disposition', '')}",
+                    f"Strength: {enemy.get('strength', '')}",
+                    f"Recent Activity: {enemy.get('recent_activity', '')}",
+                    f"Capabilities: {enemy.get('capabilities', '')}",
+                    f"Most Likely COA: {enemy.get('most_likely_coa', '')}",
+                    f"Most Dangerous COA: {enemy.get('most_dangerous_coa', '')}",
                 ])
             ),
+            # Situation — Enemy (individual fields)
+            _make_text_replace_request("ENEMY_COMPOSITION", enemy.get("composition", "")),
+            _make_text_replace_request("ENEMY_DISPOSITION", enemy.get("disposition", "")),
+            _make_text_replace_request("ENEMY_STRENGTH", enemy.get("strength", "")),
+            _make_text_replace_request("ENEMY_RECENT_ACTIVITY", enemy.get("recent_activity", "")),
+            _make_text_replace_request("ENEMY_CAPABILITIES", enemy.get("capabilities", "")),
+            _make_text_replace_request("ENEMY_MOST_LIKELY_COA", enemy.get("most_likely_coa", "")),
+            _make_text_replace_request("ENEMY_MOST_DANGEROUS_COA", enemy.get("most_dangerous_coa", "")),
+            # Situation — Friendly
             _make_text_replace_request(
                 "SITUATION_FRIENDLY",
-                sit.get("friendly", {}).get("higher_hq_mission", "")
+                friendly.get("higher_hq_mission", "")
             ),
+            _make_text_replace_request("ADJACENT_UNITS", friendly.get("adjacent_units", "")),
+            _make_text_replace_request("SUPPORTING_UNITS", friendly.get("supporting_units", "")),
+            # Situation — Other
+            _make_text_replace_request("ATTACHMENTS_DETACHMENTS", sit.get("attachments_detachments", "")),
+            _make_text_replace_request("CIVIL_CONSIDERATIONS", sit.get("civil_considerations", "")),
+            # Mission
+            _make_text_replace_request("MISSION", opord_dict.get("mission", "")),
+            _make_text_replace_request("INSERT_METHOD", opord_dict.get("insert_method", "")),
+            _make_text_replace_request("DZ_LZ", opord_dict.get("dz_lz", "")),
+            # Execution
             _make_text_replace_request(
                 "COMMANDERS_INTENT", ex.get("commanders_intent", "")
             ),
@@ -143,19 +194,38 @@ def export_to_slides(opord_dict: dict) -> Optional[str]:
             _make_text_replace_request(
                 "SCHEME_OF_FIRES", ex.get("scheme_of_fires", "")
             ),
+            _make_text_replace_request("TASKS_TO_SUBORDINATES", tasks_text),
             _make_text_replace_request(
                 "COORDINATING_INSTRUCTIONS", ex.get("coordinating_instructions", "")
             ),
             _make_text_replace_request(
+                "RULES_OF_ENGAGEMENT", ex.get("rules_of_engagement", "")
+            ),
+            # Sustainment
+            _make_text_replace_request(
                 "SUSTAINMENT_LOGISTICS", su.get("logistics", "")
+            ),
+            _make_text_replace_request(
+                "SUSTAINMENT_PERSONNEL", su.get("personnel", "")
             ),
             _make_text_replace_request(
                 "SUSTAINMENT_MEDICAL", su.get("medical", "")
             ),
+            # Command and Signal (composite)
             _make_text_replace_request(
                 "COMMAND_AND_SIGNAL",
-                f"{cs.get('signal', '')}  Frequencies: {cs.get('frequencies', '')}"
+                f"CP: {cs.get('command', '')}  "
+                f"Succession: {cs.get('succession_of_command', '')}  "
+                f"Signal: {cs.get('signal', '')}  "
+                f"Frequencies: {cs.get('frequencies', '')}  "
+                f"Challenge/Password: {cs.get('challenge_and_password', '')}"
             ),
+            # Command and Signal (individual fields)
+            _make_text_replace_request("CP_LOCATION", cs.get("command", "")),
+            _make_text_replace_request("SUCCESSION_OF_COMMAND", cs.get("succession_of_command", "")),
+            _make_text_replace_request("SIGNAL", cs.get("signal", "")),
+            _make_text_replace_request("FREQUENCIES", cs.get("frequencies", "")),
+            _make_text_replace_request("CHALLENGE_AND_PASSWORD", cs.get("challenge_and_password", "")),
         ]
 
         slides_service.presentations().batchUpdate(

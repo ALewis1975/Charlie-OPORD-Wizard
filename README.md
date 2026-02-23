@@ -66,7 +66,7 @@ python app.py
 2. Enable the **Google Slides API** and **Google Drive API**.
 3. Create an **OAuth 2.0 Client ID** (Desktop app), download `credentials.json`, and place it in the project root.
 4. Set `GOOGLE_CREDENTIALS_FILE=credentials.json` in your `.env`.
-5. (Optional) Set `GOOGLE_SLIDES_TEMPLATE_ID` to the ID of a Google Slides template that uses the `{{PLACEHOLDER}}` convention documented in `opord/slides_helper.py`.
+5. (Optional) Set `GOOGLE_SLIDES_TEMPLATE_ID` to the ID of a Google Slides template that uses the `{{PLACEHOLDER}}` convention documented in `opord/slides_helper.py`. The `.env.example` ships with the [official Charlie OPORD Wizard template](https://docs.google.com/presentation/d/1yktdbM4Rw0dcWcD07fYlY37AqF9eaCtx3Pdvkf0ReCw/edit).
 
 On first export you will be prompted to authorise the app in your browser; a `token.json` file is cached for subsequent runs.
 
